@@ -1,9 +1,14 @@
-.section__title {
-  margin-bottom: 10px;
+.inputFilter {
+  display: block;
+  width: 200px;
+  height: 30px;
+  border: 2px solid #2a2a2a;
+  margin-bottom: 20px;
+  border-radius: 5px;
 }
 
-.form__input {
-  padding-left: 5px;
-  height: 25px;
-  border-radius: 10px;
+.labelFilter {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 5px;
 }

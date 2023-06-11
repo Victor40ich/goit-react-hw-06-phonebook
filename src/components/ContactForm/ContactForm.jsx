@@ -1,72 +1,95 @@
-import React from 'react';
+import { useState } from 'react';
+import styles from './ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
-import { addContact } from '../../redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
+import { Notify } from 'notiflix';
+import { addContact } from 'redux/contacts-slice';
 
-import { Report } from 'notiflix/build/notiflix-report-aio';
+const initialState = {
+  name: '',
+  number: '',
+};
 
-const ContactForm = () => {
+function ContactForm() {
+  const [state, setState] = useState({
+    ...initialState,
+  });
+  const { name, number } = state;
+  const contacts = useSelector(getContacts);
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts);
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    const number = event.target.elements.number.value;
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setState(prevState => {
+      return { ...prevState, [name]: value };
+    });
+  };
 
-    const checkNewName = contacts.find(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
-    );
+  const handleSubmitForm = e => {
+    e.preventDefault();
+    addNewContact({ name, number });
+    setState({
+      ...initialState,
+    });
+  };
 
-    if (checkNewName) {
-      Report.info(`Info`, `${name} is already in contacts.`, 'Ok');
+  const addNewContact = ({ name, number }) => {
+    if (checkContactExist(name)) {
+      Notify.failure(`${name} is already in your contacts`);
       return;
     }
+    dispatch(
+      addContact({
+        name,
+        number,
+      })
+    );
+  };
 
-    dispatch(addContact({ id: nanoid(), name, number }));
-    event.target.reset();
+  const checkContactExist = name => {
+    const normalizadName = name.toLowerCase().trim();
+    const foundContact = contacts.find(
+      ({ name }) => name.toLowerCase().trim() === normalizadName
+    );
+    return Boolean(foundContact);
   };
 
   return (
-    <div className="section">
-      <h1 className="section__title">Phonebook</h1>
-      <form className="form" onSubmit={handleSubmit}>
-        <div className="form__container">
-          <label className="form__label" htmlFor="name">
-            Name
-          </label>
-          <input
-            className="form__input"
-            type="text"
-            name="name"
-            pattern="^[a-zA-Z\u0400-\u04FF]+([\-'\s][a-zA-Z\u0400-\u04FF]+)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            id="name"
-          />
-        </div>
-
-        <div className="form__container">
-          <label className="form__label" htmlFor="number">
-            Number
-          </label>
-          <input
-            className="form__input"
-            type="tel"
-            name="number"
-            pattern="^([+]?[\s0-9]+)?(\(\d{1,3}\)|\d{1,3})([-]?[\s]?[\d]+)+$"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-            id="number"
-          />
-        </div>
-
-        <button className="form__button" type="submit">
-          Add contact
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmitForm}>
+      <label className={styles.labelText}>
+        Name
+        <input
+          autoFocus
+          onChange={handleInputChange}
+          className={styles.input}
+          value={name}
+          type="text"
+          name="name"
+          placeholder="Enter contact name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adriafn, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+        />
+      </label>
+      <label className={styles.labelText}>
+        Number
+        <input
+          onChange={handleInputChange}
+          className={styles.input}
+          value={number}
+          type="tel"
+          name="number"
+          placeholder="Enter contact number"
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+        />
+      </label>
+      <button type="submit" className={styles.submitButton}>
+        Add Contact
+      </button>
+    </form>
   );
-};
+}
 
 export default ContactForm;

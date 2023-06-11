@@ -1,8 +1,4 @@
-@import-normalize;
-/* bring in normalize.css styles */
-@import './components/ContactForm/ContactForm.module.css';
-@import './components/Filter/Filter.module.css';
-@import './components/ContactList/ContactList.module.css';
+@import-normalize; /* bring in normalize.css styles */
 
 body {
   margin: 0;
@@ -18,57 +14,62 @@ code {
     monospace;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 p {
   margin: 0;
 }
 
-ul,
-ol {
-  margin: 0;
-  padding: 0;
-}
-
-li {
-  list-style-type: none;
-}
-
-img {
+img,
+picture {
   display: block;
   max-width: 100%;
   height: auto;
 }
 
-.container {
-  max-width: 1140px;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  margin-top: 40px;
-  margin-bottom: 40px;
+svg {
+  display: block;
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  margin-top: 10px;
-
-  max-width: 450px;
-  align-items: center;
-  justify-content: center;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-.section__list {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  margin-top: 10px;
-  max-width: 300px;
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  display: inline-flex;
+  margin: 0;
+  text-decoration: none;
+}
+
+button {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+textarea {
+  resize: none;
+}
+
+a,
+button,
+input,
+textarea {
+  cursor: pointer;
 }
